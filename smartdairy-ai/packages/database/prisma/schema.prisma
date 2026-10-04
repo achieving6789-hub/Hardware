@@ -1,0 +1,435 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String        @map("password_hash")
+  role         String        @default("OPERATOR") // ADMIN, FARM_MANAGER, VETERINARIAN, OPERATOR
+  farmId       String?       @map("farm_id")
+  farm         Farm?         @relation(fields: [farmId], references: [id])
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  alertEvents  AlertEvent[]
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Farm {
+  id              String           @id @default(cuid())
+  name            String
+  location        String
+  timezone        String           @default("Asia/Kolkata")
+  numberOfCows    Int              @default(30) @map("number_of_cows")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  users           User[]
+  stations        MilkingStation[]
+  cows            Cow[]
+  alerts          Alert[]
+  environmentReadings FarmEnvironmentReading[]
+
+  @@map("farms")
+}
+
+model MilkingStation {
+  id          String           @id @default(cuid())
+  farmId      String           @map("farm_id")
+  farm        Farm             @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  name        String
+  stationCode String           @unique @map("station_code")
+  status      String           @default("ONLINE") // ONLINE, OFFLINE, MAINTENANCE
+  lastActive  DateTime?        @map("last_active")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  sessions    MilkingSession[]
+  devices     SensorDevice[]
+  cipSessions CipSession[]
+
+  @@map("milking_stations")
+}
+
+model Cow {
+  id              String            @id @default(cuid())
+  farmId          String            @map("farm_id")
+  farm            Farm              @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  cowCode         String            @unique @map("cow_code")
+  rfidId          String            @unique @map("rfid_id")
+  name            String
+  breed           String            @default("Holstein Friesian")
+  dateOfBirth     DateTime?         @map("date_of_birth")
+  age             Float             @default(4.0)
+  lactationNumber Int               @default(2) @map("lactation_number")
+  parity          Int               @default(2)
+  daysInMilk      Int               @default(60) @map("days_in_milk")
+  bodyWeight      Float             @default(580.0) @map("body_weight")
+  status                      String            @default("ACTIVE") // ACTIVE, DRY, SICK, QUARANTINE
+  healthStatus                String            @default("LOW") // LOW, MODERATE, HIGH, VERY_HIGH
+  previousMastitisHistory     Boolean           @default(false) @map("previous_mastitis_history")
+  previousDiseaseHistory      String?           @default("None") @map("previous_disease_history")
+  previousTreatmentHistory    String?           @default("None") @map("previous_treatment_history")
+  numPreviousMastitisEpisodes Int               @default(0) @map("num_previous_mastitis_episodes")
+  lastMastitisEpisodeDate     DateTime?         @map("last_mastitis_episode_date")
+  lastTreatmentDate           DateTime?         @map("last_treatment_date")
+  lactationStage              String            @default("MID") @map("lactation_stage") // EARLY, PEAK, MID, LATE, DRY
+  createdAt                   DateTime          @default(now()) @map("created_at")
+  updatedAt                   DateTime          @updatedAt @map("updated_at")
+
+  rfidTag                     RfidTag?
+  rfidEvents                  RfidReadEvent[]
+  sessions                    MilkingSession[]
+  healthProfile               CowHealthProfile?
+  baseline                    CowBaseline?
+  predictions                 AiPrediction[]
+  alerts                      Alert[]
+  vitalsReadings              AnimalVitalsReading[]
+  vaccinations                VaccinationRecord[]
+  treatments                  TreatmentRecord[]
+
+  @@map("cows")
+}
+
+model RfidTag {
+  id         String    @id @default(cuid())
+  tagUid     String    @unique @map("tag_uid")
+  cowId      String    @unique @map("cow_id")
+  cow        Cow       @relation(fields: [cowId], references: [id], onDelete: Cascade)
+  status     String    @default("ACTIVE") // ACTIVE, INACTIVE, REPLACED
+  assignedAt DateTime  @default(now()) @map("assigned_at")
+  lastSeen   DateTime? @map("last_seen")
+
+  @@map("rfid_tags")
+}
+
+model RfidReadEvent {
+  id             String   @id @default(cuid())
+  tagUid         String   @map("tag_uid")
+  readerId       String   @map("reader_id")
+  cowId          String?  @map("cow_id")
+  cow            Cow?     @relation(fields: [cowId], references: [id])
+  timestamp      DateTime @default(now())
+  readStatus     String   @default("SUCCESS") @map("read_status") // SUCCESS, UNKNOWN, DUPLICATE, INVALID
+  signalStrength Float    @default(-45.0) @map("signal_strength")
+
+  @@map("rfid_read_events")
+}
+
+model MilkingSession {
+  id                          String          @id @default(cuid())
+  sessionCode                 String          @unique @map("session_code")
+  cowId                       String?         @map("cow_id")
+  cow                         Cow?            @relation(fields: [cowId], references: [id])
+  stationId                   String          @map("station_id")
+  station                     MilkingStation  @relation(fields: [stationId], references: [id])
+  rfidTagId                   String?         @map("rfid_tag_id")
+  startTime                   DateTime        @default(now()) @map("start_time")
+  endTime                     DateTime?       @map("end_time")
+  status                      String          @default("IDLE") // IDLE, READY, MILKING, PAUSED, ENDING, COMPLETED, UNIDENTIFIED, ERROR, CIP
+
+  totalVolume                 Float           @default(0.0) @map("total_volume")
+  averageFlow                 Float           @default(0.0) @map("average_flow")
+  peakFlow                    Float           @default(0.0) @map("peak_flow")
+
+  averageTemperature         Float           @default(0.0) @map("average_temperature")
+  averageConductivity         Float           @default(0.0) @map("average_conductivity")
+  averagePh                   Float           @default(0.0) @map("average_ph")
+  averageScc                  Float           @default(0.0) @map("average_scc")
+
+  milkYieldDeviationPercent   Float           @default(0.0) @map("milk_yield_deviation_percent")
+  riskScore                   Float           @default(0.0) @map("risk_score")
+  riskLevel                   String          @default("LOW") @map("risk_level") // LOW, MODERATE, HIGH, VERY_HIGH
+  createdAt                   DateTime        @default(now()) @map("created_at")
+
+  readings                    SensorReading[]
+  predictions                 AiPrediction[]
+  alerts                      Alert[]
+
+  @@map("milking_sessions")
+}
+
+model SensorReading {
+  id                 String         @id @default(cuid())
+  sessionId          String         @map("session_id")
+  session            MilkingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  timestamp          DateTime       @default(now())
+
+  flowRate           Float          @map("flow_rate")
+  totalVolume        Float          @map("total_volume")
+
+  temperature        Float
+  conductivity       Float
+
+  ph                 Float
+  scc                Float
+
+  flowStatus         String         @default("GOOD") @map("flow_status")
+  temperatureStatus  String         @default("GOOD") @map("temperature_status")
+  conductivityStatus String         @default("GOOD") @map("conductivity_status")
+  phStatus           String         @default("GOOD") @map("ph_status")
+  sccStatus          String         @default("GOOD") @map("scc_status")
+
+  dataQuality        String         @default("GOOD") @map("data_quality") // GOOD, WARNING, MISSING, INVALID, OFFLINE
+  sensorSource       String         @default("SIMULATOR") @map("sensor_source")
+  eventId            String?        @unique @map("event_id")
+
+  @@index([sessionId, timestamp])
+  @@map("sensor_readings")
+}
+
+model SensorDevice {
+  id                 String            @id @default(cuid())
+  name               String
+  type               String            // RFID, SOMADETECT, FLOWMAG, PH
+  stationId          String            @map("station_id")
+  station            MilkingStation    @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  manufacturer       String
+  model              String
+  status             String            @default("ONLINE") // ONLINE, OFFLINE, ERROR, CALIBRATING
+
+  lastSeen           DateTime?         @map("last_seen")
+  firmwareVersion    String            @default("1.0.0") @map("firmware_version")
+  calibrationStatus  String            @default("CALIBRATED") @map("calibration_status")
+  maintenanceDue     DateTime?         @map("maintenance_due")
+  errorCount         Int               @default(0) @map("error_count")
+  healthLogs         SensorHealthLog[]
+
+  @@map("sensor_devices")
+}
+
+model SensorHealthLog {
+  id        String       @id @default(cuid())
+  sensorId  String       @map("sensor_id")
+  sensor    SensorDevice @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  timestamp DateTime     @default(now())
+  status    String
+  errorCode String?      @map("error_code")
+  message   String
+
+  @@map("sensor_health_logs")
+}
+
+model CowHealthProfile {
+  id                  String   @id @default(cuid())
+  cowId               String   @unique @map("cow_id")
+  cow                 Cow      @relation(fields: [cowId], references: [id], onDelete: Cascade)
+
+  currentRiskScore    Float    @default(0.0) @map("current_risk_score")
+  currentRiskLevel    String   @default("LOW") @map("current_risk_level")
+  forecastRiskScore   Float    @default(0.0) @map("forecast_risk_score")
+  forecastRiskLevel   String   @default("LOW") @map("forecast_risk_level")
+  riskDirection       String   @default("STABLE") @map("risk_direction") // INCREASING, STABLE, DECREASING
+  recommendedAction   String   @default("Continue routine monitoring.") @map("recommended_action")
+
+  currentScc          Float    @default(120.0) @map("current_scc")
+  currentPh           Float    @default(6.65) @map("current_ph")
+  currentConductivity Float    @default(5.6) @map("current_conductivity")
+  currentTemperature  Float    @default(38.5) @map("current_temperature")
+
+  currentMilkYield    Float    @default(14.0) @map("current_milk_yield")
+  lastMilkingDate     DateTime? @map("last_milking_date")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("cow_health_profiles")
+}
+
+model CowBaseline {
+  id                    String   @id @default(cuid())
+  cowId                 String   @unique @map("cow_id")
+  cow                   Cow      @relation(fields: [cowId], references: [id], onDelete: Cascade)
+
+  baselineMilkYield     Float    @map("baseline_milk_yield")
+  baselineScc           Float    @map("baseline_scc")
+  baselinePh            Float    @map("baseline_ph")
+  baselineConductivity  Float    @map("baseline_conductivity")
+  baselineTemperature   Float    @map("baseline_temperature")
+
+  baselineFlow          Float    @map("baseline_flow")
+  calculationWindowDays Int      @default(30) @map("calculation_window_days")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@map("cow_baselines")
+}
+
+model AiPrediction {
+  id                String                @id @default(cuid())
+  cowId             String                @map("cow_id")
+  cow               Cow                   @relation(fields: [cowId], references: [id], onDelete: Cascade)
+  sessionId         String                @map("session_id")
+  session           MilkingSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  riskScore         Float                 @map("risk_score")
+  riskLevel         String                @map("risk_level") // LOW, MODERATE, HIGH, VERY_HIGH
+  forecastScore     Float?                @default(0.0) @map("forecast_score")
+  forecastLevel     String?               @default("LOW") @map("forecast_level")
+  riskDirection     String?               @default("STABLE") @map("risk_direction") // INCREASING, STABLE, DECREASING
+  forecastHorizon   String?               @default("24_72_HOURS") @map("forecast_horizon")
+  recommendedAction String?               @default("Continue routine monitoring.") @map("recommended_action")
+  targetLabel       String?               @default("NO_MASTITIS") @map("target_label") // NO_MASTITIS, EARLY_WARNING, HIGH_RISK, CONFIRMED_MASTITIS
+  predictionType    String                @default("MASTITIS_RISK") @map("prediction_type")
+  confidence        Float                 @default(0.92)
+  explanation       String
+  createdAt         DateTime              @default(now()) @map("created_at")
+
+  factors           AiPredictionFactor[]
+
+  @@map("ai_predictions")
+}
+
+model AiPredictionFactor {
+  id               String       @id @default(cuid())
+  predictionId     String       @map("prediction_id")
+  prediction       AiPrediction @relation(fields: [predictionId], references: [id], onDelete: Cascade)
+
+  factorName       String       @map("factor_name")
+  factorValue      Float        @map("factor_value")
+  baselineValue    Float        @map("baseline_value")
+  deviationPercent Float        @map("deviation_percent")
+  contribution     Float
+  direction        String       // INCREASE, DECREASE, NEUTRAL
+
+  @@map("ai_prediction_factors")
+}
+
+model Alert {
+  id             String        @id @default(cuid())
+  farmId         String        @map("farm_id")
+  farm           Farm          @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  cowId          String?       @map("cow_id")
+  cow            Cow?          @relation(fields: [cowId], references: [id])
+  sessionId      String?       @map("session_id")
+  session        MilkingSession? @relation(fields: [sessionId], references: [id])
+
+  alertType      String        @map("alert_type") // MASTITIS_RISK, MILK_YIELD_DROP, HIGH_SCC, etc.
+  severity       String        @default("MEDIUM") // INFO, LOW, MEDIUM, HIGH, CRITICAL
+  title          String
+  message        String
+  status         String        @default("ACTIVE") // ACTIVE, ACKNOWLEDGED, RESOLVED
+
+  createdAt      DateTime      @default(now()) @map("created_at")
+  acknowledgedAt DateTime?     @map("acknowledged_at")
+  resolvedAt     DateTime?     @map("resolved_at")
+
+  events         AlertEvent[]
+
+  @@map("alerts")
+}
+
+model AlertEvent {
+  id        String   @id @default(cuid())
+  alertId   String   @map("alert_id")
+  alert     Alert    @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String   // ACKNOWLEDGE, RESOLVE, NOTE
+  timestamp DateTime @default(now())
+  note      String?
+
+  @@map("alert_events")
+}
+
+model CipSession {
+  id        String       @id @default(cuid())
+  stationId String       @map("station_id")
+  station   MilkingStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  startTime DateTime     @default(now()) @map("start_time")
+  endTime   DateTime?    @map("end_time")
+  status    String       @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, ABORTED
+  phase     String       @default("PRE_RINSE") // PRE_RINSE, CAUSTIC, RINSE, ACID, FINAL_RINSE, COMPLETE
+
+  readings  CipReading[]
+
+  @@map("cip_sessions")
+}
+
+model CipReading {
+  id           String     @id @default(cuid())
+  cipSessionId String     @map("cip_session_id")
+  cipSession   CipSession @relation(fields: [cipSessionId], references: [id], onDelete: Cascade)
+  timestamp    DateTime   @default(now())
+
+  flow         Float
+  temperature  Float
+  conductivity Float
+  phase        String
+
+  @@map("cip_readings")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id])
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  details    String?  // JSON string
+  timestamp  DateTime @default(now())
+
+  @@map("audit_logs")
+}
+
+model AnimalVitalsReading {
+  id                String   @id @default(cuid())
+  cowId             String   @map("cow_id")
+  cow               Cow      @relation(fields: [cowId], references: [id], onDelete: Cascade)
+  timestamp         DateTime @default(now())
+  bodyTemperature   Float    @default(38.5) @map("body_temperature") // deg C
+  activitySteps     Int      @default(2400) @map("activity_steps")   // steps/day
+  ruminationMinutes Int      @default(480)  @map("rumination_minutes") // min/day
+  feedIntakeKg      Float    @default(22.0) @map("feed_intake_kg")  // kg/day
+  sensorSource      String   @default("SIMULATOR") @map("sensor_source")
+  dataQuality       String   @default("GOOD") @map("data_quality")
+
+  @@index([cowId, timestamp])
+  @@map("animal_vitals_readings")
+}
+
+model FarmEnvironmentReading {
+  id            String   @id @default(cuid())
+  farmId        String   @map("farm_id")
+  farm          Farm     @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  timestamp     DateTime @default(now())
+  temperature   Float    @default(28.0) // Ambient deg C
+  humidity      Float    @default(65.0) // Relative humidity %
+  hygieneScore  Float    @default(85.0) @map("hygiene_score") // 0-100
+  hygieneStatus String   @default("GOOD") @map("hygiene_status") // GOOD, ATTENTION, POOR
+  sensorSource  String   @default("SIMULATOR") @map("sensor_source")
+
+  @@index([farmId, timestamp])
+  @@map("farm_environment_readings")
+}
+
+model VaccinationRecord {
+  id               String    @id @default(cuid())
+  cowId            String    @map("cow_id")
+  cow              Cow       @relation(fields: [cowId], references: [id], onDelete: Cascade)
+  vaccineName      String    @map("vaccine_name")
+  administeredDate DateTime  @default(now()) @map("administered_date")
+  nextDueDate      DateTime? @map("next_due_date")
+  status           String    @default("COMPLETED") // COMPLETED, SCHEDULED, OVERDUE
+  notes            String?
+
+  @@index([cowId, administeredDate])
+  @@map("vaccination_records")
+}
+
+model TreatmentRecord {
+  id            String   @id @default(cuid())
+  cowId         String   @map("cow_id")
+  cow           Cow      @relation(fields: [cowId], references: [id], onDelete: Cascade)
+  treatmentName String   @map("treatment_name")
+  treatmentDate DateTime @default(now()) @map("treatment_date")
+  reason        String
+  durationDays  Int      @default(3) @map("duration_days")
+  outcome       String   @default("RECOVERED") // RECOVERED, ONGOING, CHRONIC
+  notes         String?
+
+  @@index([cowId, treatmentDate])
+  @@map("treatment_records")
+}

@@ -1,0 +1,31 @@
+{
+  "name": "smartdairy-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Intelligent Milking Monitoring & Early Mastitis Risk Detection (SIH Prototype)",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/api & npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspace=apps/api",
+    "db:generate": "npm run generate --workspace=packages/database",
+    "db:push": "npm run push --workspace=packages/database",
+    "db:seed": "npm run seed --workspace=packages/database",
+    "dataset:generate": "npm run generate-dataset --workspace=packages/database"
+  },
+  "keywords": [
+    "dairy",
+    "iot",
+    "mastitis-detection",
+    "smart-farming",
+    "rfid",
+    "sih"
+  ],
+  "author": "SmartDairy AI Team",
+  "license": "MIT"
+}

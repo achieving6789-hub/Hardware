@@ -1,0 +1,31 @@
+id,farm_id,cow_code,rfid_id,name,breed,age,lactation_number,parity,days_in_milk,body_weight,status,health_status
+cow_1,farm_01,COW-001,RFID-982701,"Ganga",Jersey,3.8,2,2,47,533,ACTIVE,LOW
+cow_2,farm_01,COW-002,RFID-982702,"Kamadhenu",Gir,4.6,3,3,54,546,ACTIVE,LOW
+cow_3,farm_01,COW-003,RFID-982703,"Surabhi",Sahiwal,5.4,4,4,61,559,ACTIVE,LOW
+cow_4,farm_01,COW-004,RFID-982704,"Bella",Crossbred HF-Gir,6.2,1,1,68,572,ACTIVE,LOW
+cow_5,farm_01,COW-005,RFID-982705,"Daisy",Holstein Friesian,3,2,2,75,585,ACTIVE,LOW
+cow_6,farm_01,COW-006,RFID-982706,"Lakshmi",Jersey,3.8,3,3,82,598,ACTIVE,LOW
+cow_7,farm_01,COW-007,RFID-982707,"Nandini",Gir,4.6,4,4,89,611,ACTIVE,LOW
+cow_8,farm_01,COW-008,RFID-982708,"Gauri",Sahiwal,5.4,1,1,96,624,ACTIVE,LOW
+cow_9,farm_01,COW-009,RFID-982709,"Buttercup",Crossbred HF-Gir,6.2,2,2,103,637,ACTIVE,LOW
+cow_10,farm_01,COW-010,RFID-982710,"Luna",Holstein Friesian,3,3,3,110,650,ACTIVE,LOW
+cow_11,farm_01,COW-011,RFID-982711,"Kalyani",Jersey,3.8,4,4,117,523,ACTIVE,LOW
+cow_12,farm_01,COW-012,RFID-982712,"Radha",Gir,4.6,1,1,124,536,ACTIVE,LOW
+cow_13,farm_01,COW-013,RFID-982713,"Molly",Sahiwal,5.4,2,2,131,549,ACTIVE,LOW
+cow_14,farm_01,COW-014,RFID-982714,"Rosie",Crossbred HF-Gir,6.2,3,3,138,562,ACTIVE,LOW
+cow_15,farm_01,COW-015,RFID-982715,"Yamuna",Holstein Friesian,3,4,4,145,575,ACTIVE,LOW
+cow_16,farm_01,COW-016,RFID-982716,"Godavari",Jersey,3.8,1,1,152,588,ACTIVE,LOW
+cow_17,farm_01,COW-017,RFID-982717,"Tulsi",Gir,4.6,2,2,159,601,ACTIVE,LOW
+cow_18,farm_01,COW-018,RFID-982718,"Amrita",Sahiwal,5.4,3,3,166,614,ACTIVE,LOW
+cow_19,farm_01,COW-019,RFID-982719,"Meera",Crossbred HF-Gir,6.2,4,4,173,627,ACTIVE,LOW
+cow_20,farm_01,COW-020,RFID-982720,"Kaveri",Holstein Friesian,3,1,1,180,640,ACTIVE,LOW
+cow_21,farm_01,COW-021,RFID-982721,"Shreya",Jersey,3.8,2,2,187,653,ACTIVE,MODERATE
+cow_22,farm_01,COW-022,RFID-982722,"Chitra",Gir,4.6,3,3,194,526,ACTIVE,MODERATE
+cow_23,farm_01,COW-023,RFID-982723,"Ananya",Sahiwal,5.4,4,4,201,539,ACTIVE,MODERATE
+cow_24,farm_01,COW-024,RFID-982724,"Tara",Crossbred HF-Gir,6.2,1,1,208,552,ACTIVE,MODERATE
+cow_25,farm_01,COW-025,RFID-982725,"Bhavani",Holstein Friesian,3,2,2,215,565,ACTIVE,MODERATE
+cow_26,farm_01,COW-026,RFID-982726,"Veda",Jersey,3.8,3,3,42,578,ACTIVE,HIGH
+cow_27,farm_01,COW-027,RFID-982727,"Durga",Gir,4.6,4,4,49,591,ACTIVE,HIGH
+cow_28,farm_01,COW-028,RFID-982728,"Sita",Sahiwal,5.4,1,1,56,604,ACTIVE,HIGH
+cow_29,farm_01,COW-029,RFID-982729,"Parvati",Crossbred HF-Gir,6.2,2,2,63,617,ACTIVE,HIGH
+cow_30,farm_01,COW-030,RFID-982730,"Anandi",Holstein Friesian,3,3,3,70,630,ACTIVE,HIGH

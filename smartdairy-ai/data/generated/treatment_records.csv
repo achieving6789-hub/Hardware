@@ -1,0 +1,11 @@
+id,cow_id,treatment_name,treatment_date,reason,duration_days,outcome,withholding_period_days
+trt_cow_21,cow_21,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_22,cow_22,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_23,cow_23,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_24,cow_24,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_25,cow_25,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_26,cow_26,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_27,cow_27,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_28,cow_28,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_29,cow_29,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4
+trt_cow_30,cow_30,"Intramammary Cefquinome & Flunixin",2026-08-20,"Subclinical mastitis prodromal spike",3,RECOVERED,4

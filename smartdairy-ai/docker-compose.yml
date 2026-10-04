@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: smartdairy-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: smartdairy
+      POSTGRES_PASSWORD: smartdairy_password_2026
+      POSTGRES_DB: smartdairy_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U smartdairy -d smartdairy_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    container_name: smartdairy-api
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: "postgresql://smartdairy:smartdairy_password_2026@postgres:5432/smartdairy_db?schema=public"
+      JWT_SECRET: "smartdairy-super-secret-jwt-key-2026-sih"
+      FRONTEND_URL: "http://localhost:5173"
+      SENSOR_MODE: "SIMULATION"
+      AI_MODE: "RULE_BASED"
+    ports:
+      - "4000:4000"
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: smartdairy-web
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
+volumes:
+  pgdata:

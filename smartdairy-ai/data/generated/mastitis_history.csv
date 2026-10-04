@@ -1,0 +1,11 @@
+id,cow_id,episode_date,affected_quarter,severity_grade,peak_scc,pathogen_isolated,resolution_date
+mh_cow_21,cow_21,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_22,cow_22,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_23,cow_23,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_24,cow_24,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_25,cow_25,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_26,cow_26,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_27,cow_27,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_28,cow_28,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_29,cow_29,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24
+mh_cow_30,cow_30,2026-08-19,RIGHT_REAR,SUBCLINICAL,420,Staphylococcus aureus,2026-08-24

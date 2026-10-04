@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+*/node_modules/
+*/*/node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+*/dist/
+*/*/dist/
+build/
+.next/
+out/
+
+# Database temp/journal files
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.local
+
+# Scratch and cache
+.turbo
+.parcel-cache
+.eslintcache
