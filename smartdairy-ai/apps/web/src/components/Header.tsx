@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
               SIH PS 26109
             </span>
             <span className="hidden xl:inline-block rounded-full bg-emerald-950/80 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-800">
-              Early Mastitis Risk Forecasting
+              {language === 'ta' ? 'முன்கூட்டிய மடிநோய் கணிப்பு' : language === 'hi' ? 'थनैला जोखिम पूर्वानुमान' : 'Early Mastitis Risk Forecasting'}
             </span>
           </div>
           <p className="text-xs text-slate-400 hidden sm:block truncate max-w-xl">
@@ -68,8 +68,10 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
         {/* Hardware Line Status */}
         <div className="hidden lg:flex items-center gap-2 rounded-lg bg-slate-800/80 px-3 py-1.5 border border-slate-700/60 text-xs">
           <Activity className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
-          <span className="text-slate-400">Line:</span>
-          <span className="font-semibold text-slate-200">STN-01 (Shared Inline)</span>
+          <span className="text-slate-400">{language === 'ta' ? 'வரிசை:' : language === 'hi' ? 'लाइन:' : 'Line:'}</span>
+          <span className="font-semibold text-slate-200">
+            {language === 'ta' ? 'STN-01 (இணைக்கப்பட்ட உணரி)' : 'STN-01 (Shared Inline)'}
+          </span>
         </div>
 
         {/* Demo Database Mode Badge */}
@@ -152,7 +154,9 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
           <div className="text-right hidden sm:block">
             <div className="text-xs font-semibold text-slate-200">{user?.name}</div>
             <div className="text-[10px] uppercase tracking-wider font-bold text-cyan-400">
-              {user?.role}
+              {language === 'ta'
+                ? (user?.role === 'ADMIN' ? 'அரசு / நிர்வாகி' : user?.role === 'FARM_MANAGER' ? 'விவசாயி' : user?.role === 'VETERINARIAN' ? 'கால்நடை மருத்துவர்' : 'ஆபரேட்டர்')
+                : user?.role}
             </div>
           </div>
           <button
