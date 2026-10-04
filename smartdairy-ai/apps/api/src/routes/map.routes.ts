@@ -186,8 +186,8 @@ router.get('/farm-geo', async (req: Request, res: Response, next: NextFunction):
     // Assign realistic GPS coordinates placing critical/risk cows in danger zones
     const mappedCows = cows.map((cow, index) => {
       const latestHealth = cow.healthProfile;
-      const latestSession = cow.sessions[0];
-      const riskScore = latestHealth?.riskScore ?? latestSession?.riskScore ?? (cow.healthStatus === 'CRITICAL' ? 88 : cow.healthStatus === 'HIGH' ? 68 : cow.healthStatus === 'MODERATE' ? 42 : 12);
+      const latestSession = cow.sessions?.[0];
+      const riskScore = latestHealth?.currentRiskScore ?? (cow.healthStatus === 'CRITICAL' ? 88 : cow.healthStatus === 'HIGH' ? 68 : cow.healthStatus === 'MODERATE' ? 42 : 12);
       const riskLevel = (cow.healthStatus as 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL') || 'LOW';
 
       const r1 = pseudoRandom(index * 13 + 1);

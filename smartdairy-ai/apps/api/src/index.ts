@@ -10,7 +10,7 @@ const app = createApp();
 const server = http.createServer(app);
 
 // Initialize Socket.IO server
-socketService.init(server, process.env.FRONTEND_URL || 'http://localhost:5173');
+socketService.init(server, process.env.FRONTEND_URL || '*');
 
 server.listen(PORT, () => {
   console.log(`====================================================`);
