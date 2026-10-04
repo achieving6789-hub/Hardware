@@ -18,6 +18,7 @@ import alertRoutes from './routes/alert.routes';
 import cipRoutes from './routes/cip.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import simulationRoutes from './routes/simulation.routes';
+import mapRoutes from './routes/map.routes';
 
 import { errorHandler } from './middleware/errorHandler';
 
@@ -77,6 +78,7 @@ export function createApp(): Express {
   app.use('/api/cip', cipRoutes);
   app.use('/api/dashboard', dashboardRoutes);
   app.use('/api/simulation', simulationRoutes);
+  app.use('/api/map', mapRoutes);
 
   // Centralized Error Handling
   app.use(errorHandler);

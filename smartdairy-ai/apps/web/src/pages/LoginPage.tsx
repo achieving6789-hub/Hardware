@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import {
   ShieldCheck,
   UserCheck,
@@ -10,12 +11,14 @@ import {
   AlertCircle,
   CheckCircle2,
   Database,
-  Building2
+  Building2,
+  Languages
 } from 'lucide-react';
 import { PROTOTYPE_DISCLAIMER, UserRole } from '@smartdairy/shared';
 
 export const LoginPage: React.FC = () => {
   const { login, register, quickLogin, isLoading } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const [mode, setMode] = useState<'login' | 'register'>('login');
 
   // Login form state
@@ -88,6 +91,35 @@ export const LoginPage: React.FC = () => {
       {/* Background ambient glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none" />
 
+      {/* Top Language Switcher */}
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 p-1.5 shadow-xl">
+        <Languages className="h-4 w-4 text-cyan-400 ml-1" />
+        <button
+          onClick={() => setLanguage('en')}
+          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            language === 'en' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          English
+        </button>
+        <button
+          onClick={() => setLanguage('ta')}
+          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            language === 'ta' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          தமிழ்
+        </button>
+        <button
+          onClick={() => setLanguage('hi')}
+          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            language === 'hi' ? 'bg-cyan-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          हिंदी
+        </button>
+      </div>
+
       <div className="w-full max-w-xl z-10">
         {/* Brand header */}
         <div className="text-center mb-6">
@@ -98,10 +130,10 @@ export const LoginPage: React.FC = () => {
             SmartDairy <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">AI</span>
           </h1>
           <p className="mt-1 text-sm text-slate-400">
-            Intelligent Milking Line Monitoring & Early Mastitis Risk Detection
+            {t('brand.subtitle')}
           </p>
           <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full bg-slate-900 border border-slate-800 px-3.5 py-1 text-xs text-cyan-400 shadow-inner">
-            <span>SIH Prototype — Shared Sensor Line & RFID Engine</span>
+            <span>{t('brand.prototype')}</span>
           </div>
         </div>
 
@@ -110,7 +142,7 @@ export const LoginPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <Database className="h-4 w-4 text-cyan-400 shrink-0" />
             <span>
-              <strong>Demo Database Active:</strong> Operating on <code className="bg-slate-900/80 px-1.5 py-0.5 rounded text-cyan-300 font-mono">demo.db</code>
+              <strong>{t('badge.demo_db')}:</strong> <code className="bg-slate-900/80 px-1.5 py-0.5 rounded text-cyan-300 font-mono">demo.db</code>
             </span>
           </div>
           <span className="hidden sm:inline-block rounded-full bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-300 font-medium">
@@ -128,14 +160,14 @@ export const LoginPage: React.FC = () => {
                 setMode('login');
                 setError(null);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                 mode === 'login'
                   ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <LogIn className="h-3.5 w-3.5" />
-              <span>Sign In</span>
+              <span>{t('auth.signin')}</span>
             </button>
             <button
               type="button"
@@ -143,14 +175,14 @@ export const LoginPage: React.FC = () => {
                 setMode('register');
                 setError(null);
               }}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-lg transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                 mode === 'register'
                   ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/30'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <UserPlus className="h-3.5 w-3.5" />
-              <span>Register (Demo DB)</span>
+              <span>{t('auth.register')}</span>
             </button>
           </div>
 
@@ -175,7 +207,7 @@ export const LoginPage: React.FC = () => {
               <form onSubmit={handleLoginSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Email Address
+                    {t('auth.email')}
                   </label>
                   <input
                     type="email"
@@ -189,7 +221,7 @@ export const LoginPage: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Password
+                    {t('auth.password')}
                   </label>
                   <input
                     type="password"
@@ -207,14 +239,14 @@ export const LoginPage: React.FC = () => {
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <LogIn className="h-4 w-4" />
-                  <span>{isLoading ? 'Signing In...' : 'Sign In to Farm Console'}</span>
+                  <span>{isLoading ? 'Signing In...' : t('auth.signin_btn')}</span>
                 </button>
               </form>
 
               {/* Quick Demo Access Buttons */}
               <div className="mt-8 border-t border-slate-800 pt-6">
                 <div className="text-center text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-                  One-Click SIH Demo Accounts
+                  {t('auth.quick_login')}
                 </div>
                 <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                   <button
@@ -263,12 +295,12 @@ export const LoginPage: React.FC = () => {
             /* REGISTER FORM */
             <form onSubmit={handleRegisterSubmit} className="space-y-4">
               <div className="rounded-lg bg-cyan-950/40 border border-cyan-800/40 p-3 text-xs text-cyan-300">
-                Registered profiles are stored directly in <strong className="text-white">demo.db</strong> without altering the original baseline database.
+                {t('auth.demo_notice')}
               </div>
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Full Name
+                  {t('auth.full_name')}
                 </label>
                 <input
                   type="text"
@@ -276,13 +308,13 @@ export const LoginPage: React.FC = () => {
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
                   className="w-full rounded-xl bg-slate-900/90 border border-slate-700/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-                  placeholder="e.g. Ramesh Kumar"
+                  placeholder="e.g. Ramesh Kumar / ரமேஷ் குமார்"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Email Address
+                  {t('auth.email')}
                 </label>
                 <input
                   type="email"
@@ -297,7 +329,7 @@ export const LoginPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Password
+                    {t('auth.password')}
                   </label>
                   <input
                     type="password"
@@ -311,7 +343,7 @@ export const LoginPage: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Confirm Password
+                    {t('auth.confirm_password')}
                   </label>
                   <input
                     type="password"
@@ -326,7 +358,7 @@ export const LoginPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Role in Dairy Unit
+                  {t('auth.role')}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
@@ -356,7 +388,7 @@ export const LoginPage: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Farm / Dairy Unit Name (Optional)
+                  {t('auth.farm_name')} (Optional)
                 </label>
                 <div className="relative">
                   <Building2 className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
@@ -376,7 +408,7 @@ export const LoginPage: React.FC = () => {
                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-cyan-500 transition-all disabled:opacity-50 cursor-pointer"
               >
                 <UserPlus className="h-4 w-4" />
-                <span>{isLoading ? 'Creating Demo Account...' : 'Register in Demo Database'}</span>
+                <span>{isLoading ? 'Creating Demo Account...' : t('auth.register_btn')}</span>
               </button>
             </form>
           )}

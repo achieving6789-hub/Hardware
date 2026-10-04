@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth, AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { FarmMapPage } from './pages/FarmMapPage';
 import { LiveMilkingPage } from './pages/LiveMilkingPage';
 import { CowsPage } from './pages/CowsPage';
 import { CowDetailPage } from './pages/CowDetailPage';
@@ -61,7 +63,7 @@ const MainLayout: React.FC = () => {
           currentRole={currentRole}
           onRoleChange={setCurrentRole}
         />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           {activePage === 'dashboard' && (
             <DashboardPage
               onNavigate={handleNavigate}
@@ -69,6 +71,7 @@ const MainLayout: React.FC = () => {
               onRoleChange={setCurrentRole}
             />
           )}
+          {activePage === 'farm-map' && <FarmMapPage onNavigate={handleNavigate} />}
           {activePage === 'live-milking' && <LiveMilkingPage onNavigate={handleNavigate} />}
           {activePage === 'cows' && <CowsPage onNavigate={handleNavigate} />}
           {activePage === 'cow-detail' && selectedCowId && (
@@ -90,9 +93,11 @@ const MainLayout: React.FC = () => {
 
 export function App() {
   return (
-    <AuthProvider>
-      <MainLayout />
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <MainLayout />
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 

@@ -112,9 +112,10 @@ export const api = {
     apiRequest('/cip/start', { method: 'POST', body: JSON.stringify({ stationId }) }),
   stopCip: () => apiRequest('/cip/stop', { method: 'POST' }),
 
-  // Dashboard
+  // Dashboard & Map
   getDashboardSummary: () => apiRequest('/dashboard/summary'),
   getDashboardTrends: () => apiRequest('/dashboard/trends'),
+  getFarmGeoData: () => apiRequest('/map/farm-geo'),
 
   // Simulation
   startSimulation: (stationId?: string, cowCode?: string) =>
